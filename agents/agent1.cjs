@@ -1,27 +1,35 @@
 // agents/agent1.cjs
-const fetch = require('node-fetch');
+const Parser = require('rss-parser');
 const { PrismaClient } = require('@prisma/client');
 
-const API_URL = "https://jsonplaceholder.typicode.com/posts";
 const prisma = new PrismaClient();
+const parser = new Parser();
+
+const RSS_URL = "https://www.thairath.co.th/rss/news";
 
 async function runAgent1() {
-    const res = await fetch(API_URL);
-    const posts = await res.json();
-    const limited = posts.slice(0, 5);
+    try {
+        console.log("🟢 Agent 1 started — fetching RSS feed...");
 
-    for (const post of limited) {
-        await prisma.article.create({
-            data: {
-                title: post.title,
-                content: post.body,
-                processed: false,
-            },
-        });
-        console.log(`✅ Added article: ${post.title}`);
+        const feed = await parser.parseURL(RSS_URL);
+        // เอาแค่ 5 ข่าวล่าสุด
+        const items = feed.items.slice(0, 5);
+
+        for (const item of items) {
+            await prisma.article.create({
+                data: {
+                    title: item.title,
+                    content: item.content || item.contentSnippet || '',
+                    processed: false,
+                },
+            });
+            console.log(`✅ Added article: ${item.title}`);
+        }
+
+        console.log("🟢 Agent 1 finished.");
+    } catch (error) {
+        console.error("❌ Error in Agent 1:", error);
     }
-
-    console.log("🟢 Agent 1 finished.");
 }
 
 runAgent1();

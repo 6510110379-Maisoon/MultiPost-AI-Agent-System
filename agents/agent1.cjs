@@ -16,14 +16,23 @@ async function runAgent1() {
         const items = feed.items.slice(0, 5);
 
         for (const item of items) {
-            await prisma.article.create({
-                data: {
-                    title: item.title,
-                    content: item.content || item.contentSnippet || '',
-                    processed: false,
-                },
+            // ตรวจสอบว่ามีข่าวซ้ำใน DB หรือยัง
+            const exists = await prisma.article.findFirst({
+                where: { title: item.title }
             });
-            console.log(`✅ Added article: ${item.title}`);
+
+            if (!exists) {
+                await prisma.article.create({
+                    data: {
+                        title: item.title,
+                        content: item.content || item.contentSnippet || '',
+                        processed: false,
+                    },
+                });
+                console.log(`✅ Added article: ${item.title}`);
+            } else {
+                console.log(`⚠️ Skipped duplicate article: ${item.title}`);
+            }
         }
 
         console.log("🟢 Agent 1 finished.");

@@ -23,9 +23,35 @@ npm-debug.log
 yarn-error.log
 /dist
 /build
+/node_modules
+agents/node_modules/
+agents/package-lock.json
 
 # ----------------------
 # OS / Editor
 # ----------------------
 .DS_Store
 Thumbs.db
+
+# ----------------------
+# Prisma DB
+# ----------------------
+*.db
+prisma/dev.db
+
+# ----------------------
+# Prisma / SQLite
+# ----------------------
+agents/prisma/dev.db
+agents/prisma/.prisma/
+agents/prisma/migrations/
+
+# ----------------------
+# Agent outputs
+# ----------------------
+posts.txt
+
+# ----------------------
+# Logs
+# ----------------------
+*.log

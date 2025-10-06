@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./agents/dev.db" // path ชัดเจน ทุก agent ใช้ database เดียวกัน
+}
+
+model Article {
+  id                Int                @id @default(autoincrement())
+  title             String
+  content           String
+  processed         Boolean            @default(false)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  processedArticles ProcessedArticle[] // relation กลับ
+}
+
+model ProcessedArticle {
+  id        Int      @id @default(autoincrement())
+  articleId Int
+  content   String
+  posted    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  article Article @relation(fields: [articleId], references: [id])
+}

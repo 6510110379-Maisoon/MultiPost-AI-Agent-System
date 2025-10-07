@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./agents/dev.db" // path ชัดเจน ทุก agent ใช้ database เดียวกัน
+  url      = env("DB_PATH")
 }
 
 model Article {
@@ -12,18 +12,22 @@ model Article {
   title             String
   content           String
   processed         Boolean            @default(false)
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-  processedArticles ProcessedArticle[] // relation กลับ
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+  processedArticles ProcessedArticle[]
+
+  @@map("articles")
 }
 
 model ProcessedArticle {
   id        Int      @id @default(autoincrement())
-  articleId Int
+  articleId Int      @map("article_id") // <-- map ให้ตรง DB
   content   String
   posted    Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   article Article @relation(fields: [articleId], references: [id])
+
+  @@map("processed_articles")
 }

@@ -10,4 +10,9 @@ class Article extends Model
     use HasFactory;
 
     protected $fillable = ['title', 'content'];
+
+    public function processedArticles()
+    {
+        return $this->hasMany(ProcessedArticle::class);
+    }
 }

@@ -8,7 +8,8 @@
 <body class="bg-gray-100">
     <nav class="bg-blue-600 p-4 text-white">
         <a href="{{ route('dashboard') }}" class="font-semibold">Articles</a> |
-        <a href="{{ route('dashboard.processed') }}" class="font-semibold">Processed</a>
+        <a href="{{ route('dashboard.processed') }}" class="font-semibold">Processed</a> |
+        <a href="{{ route('dashboard.posts') }}" class="font-semibold">Posted</a>
     </nav>
 
     <main class="p-6">

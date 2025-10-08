@@ -9,18 +9,29 @@
     @else
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach ($postedArticles as $post)
-                <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                    <div class="p-5">
-                        <h2 class="text-xl font-semibold mb-2 text-gray-800">
-                            {{ $post->article->title ?? 'No Title' }}
-                        </h2>
-                        <p class="text-gray-600 mb-4">
-                            {{ Str::limit($post->content, 200) }}
+                <a href="{{ route('dashboard.post_show', $post->id) }}" class="block bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 p-5">
+                    <!-- Title -->
+                    <h2 class="text-xl font-semibold mb-2 text-gray-800">
+                        {{ $post->article->title ?? 'No Title' }}
+                    </h2>
+
+                    <!-- Description แบบย่อ -->
+                    <p class="text-gray-600 mb-2">
+                        {{ Str::limit($post->article->description ?? $post->article->content, 200) }}
+                    </p>
+
+                    <!-- Hashtags (ดึงจาก processedArticle content) -->
+                    @if($post->content)
+                        <p class="text-sm text-blue-600 mb-2">
+                            {!! implode(' ', array_filter(explode(' ', $post->content), fn($w) => str_starts_with($w, '#'))) !!}
                         </p>
-                        <p class="text-sm text-green-600 font-semibold">✅ Posted</p>
-                        <p class="text-xs text-gray-400 mt-2">Updated: {{ $post->updated_at->diffForHumans() }}</p>
-                    </div>
-                </div>
+                    @endif
+
+                    <!-- pubDate -->
+                    <p class="text-sm text-gray-500">
+                        Updated: {{ $post->article->created_at->format('d M Y, H:i') }}
+                    </p>
+                </a>
             @endforeach
         </div>
     @endif

@@ -23,3 +23,6 @@ Route::get('/dashboard/posts', function () {
     $postedArticles = ProcessedArticle::with('article')->where('posted', true)->latest()->get();
     return view('dashboard.posts', compact('postedArticles'));
 })->name('dashboard.posts');
+
+Route::get('/dashboard/posts/{id}', [DashboardController::class, 'postShow'])
+    ->name('dashboard.post_show');

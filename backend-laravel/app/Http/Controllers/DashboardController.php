@@ -33,4 +33,10 @@ class DashboardController extends Controller
             ->header('Content-Type', 'text/plain')
             ->header('Content-Disposition', 'attachment; filename="posts.txt"');
     }
+
+    public function postShow($id)
+    {
+        $post = ProcessedArticle::with('article')->findOrFail($id);
+        return view('dashboard.post_show', compact('post'));
+    }
 }

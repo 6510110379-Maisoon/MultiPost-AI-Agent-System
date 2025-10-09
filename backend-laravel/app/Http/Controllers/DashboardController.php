@@ -4,19 +4,56 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\ProcessedArticle;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::latest()->get();
+        $query = Article::query();
+
+        // Search
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+            $query->where('title', 'like', "%{$search}%")
+                ->orWhere('content', 'like', "%{$search}%");
+        }
+
         return view('dashboard.index', compact('articles'));
     }
 
-    public function processed()
+    public function processed(Request $request)
     {
-        $processedArticles = ProcessedArticle::with('article')->latest()->get();
+        $query = ProcessedArticle::with('article');
+
+        // Search
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+            $query->whereHas('article', function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                ->orWhere('content', 'like', "%{$search}%");
+            });
+        }
+
         return view('dashboard.processed', compact('processedArticles'));
+    }
+
+    public function posts(Request $request)
+    {
+        $query = ProcessedArticle::with('article')->where('posted', true);
+
+        // Search
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+            $query->whereHas('article', function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                ->orWhere('content', 'like', "%{$search}%");
+            });
+        }
+
+        $postedArticles = $query->latest()->get();
+
+        return view('dashboard.posts', compact('postedArticles'));
     }
 
     public function exportTxt()

@@ -17,7 +17,7 @@
     </p>
 
     <p class="text-sm text-gray-500">
-        Updated: {{ $post->article->created_at->format('d M Y, H:i') }}
+        Published: {{ $post->article->created_at->format('d M Y, H:i') }} <br>
     </p>
 
     <a href="{{ route('dashboard.posts') }}" class="inline-block mt-6 text-blue-600 hover:underline">

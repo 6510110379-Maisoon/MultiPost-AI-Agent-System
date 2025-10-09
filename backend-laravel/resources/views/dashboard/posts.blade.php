@@ -1,6 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+<form method="GET" action="{{ route('dashboard.posts') }}" class="mb-6 text-center">
+    <input type="text" name="search" placeholder="Search..." value="{{ request('search') }}"
+           class="border rounded px-3 py-1 w-1/2">
+    <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded ml-2">Search</button>
+</form>
+
 <div class="container mx-auto p-6">
     <h1 class="text-3xl font-bold mb-6 text-center text-blue-700">📢 Posted Articles</h1>
 
@@ -20,7 +26,7 @@
                         {{ Str::limit($post->article->description ?? $post->article->content, 200) }}
                     </p>
 
-                    <!-- Hashtags (ดึงจาก processedArticle content) -->
+                    <!-- Hashtags -->
                     @if($post->content)
                         <p class="text-sm text-blue-600 mb-2">
                             {!! implode(' ', array_filter(explode(' ', $post->content), fn($w) => str_starts_with($w, '#'))) !!}
@@ -29,7 +35,7 @@
 
                     <!-- pubDate -->
                     <p class="text-sm text-gray-500">
-                        Updated: {{ $post->article->created_at->format('d M Y, H:i') }}
+                        Published: {{ $post->article->created_at->format('d M Y, H:i') }}
                     </p>
                 </a>
             @endforeach

@@ -19,10 +19,9 @@ Route::get('/processed', [DashboardController::class, 'processed'])->name('dashb
 Route::get('/export/txt', [DashboardController::class, 'exportTxt'])->name('export.txt');
 
 // หน้า Posts (ซึ่งจะเป็นหน้าแรก)
-Route::get('/dashboard/posts', function () {
-    $postedArticles = ProcessedArticle::with('article')->where('posted', true)->latest()->get();
-    return view('dashboard.posts', compact('postedArticles'));
-})->name('dashboard.posts');
+Route::get('/dashboard/posts', [DashboardController::class, 'posts'])->name('dashboard.posts');
 
+// หน้า Post แยกตาม ID
 Route::get('/dashboard/posts/{id}', [DashboardController::class, 'postShow'])
     ->name('dashboard.post_show');
+

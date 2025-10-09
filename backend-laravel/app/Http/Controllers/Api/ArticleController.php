@@ -9,21 +9,18 @@ use Illuminate\Http\Request;
 class ArticleController extends Controller
 {
     // GET /api/articles
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::all();
+        $query = Article::query();
+
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+            $query->where('title', 'like', "%{$search}%")
+                  ->orWhere('content', 'like', "%{$search}%");
+        }
+
+        $articles = $query->latest()->get();
         return response()->json($articles);
-    }
-
-    // POST /api/articles
-    public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string',
-            'content' => 'required|string',
-        ]);
-
-        return Article::create($request->only(['title', 'content']));
     }
 
     // GET /api/articles/{id}
@@ -38,6 +35,22 @@ class ArticleController extends Controller
         $article = Article::findOrFail($id);
         $article->update($request->only(['title', 'content']));
         return $article;
+    }
+
+    // POST /api/articles
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string',
+            'content' => 'required|string',
+        ]);
+
+        $article = Article::create($request->only(['title', 'content']));
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $article
+        ], 201); // 201 = Created
     }
 
     // DELETE /api/articles/{id}

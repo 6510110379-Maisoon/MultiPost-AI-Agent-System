@@ -1,27 +1,43 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
-use App\Models\ProcessedArticle;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-// เมื่อเปิดเว็บหลัก ให้ redirect ไปหน้า posts
+// หน้าแรก redirect ไปหน้า posts
 Route::get('/', function () {
     return redirect()->route('dashboard.posts');
 });
 
-// เพิ่ม route สำหรับ Articles เดิม (ไม่ให้ลิงก์ใน navbar พัง)
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// หน้า dashboard ของคุณ (ต้องล็อกอิน)
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware('auth')
+    ->name('dashboard');
 
-// หน้า Processed
-Route::get('/processed', [DashboardController::class, 'processed'])->name('dashboard.processed');
+// หน้า processed (ต้องล็อกอิน)
+Route::get('/processed', [DashboardController::class, 'processed'])
+    ->middleware('auth')
+    ->name('dashboard.processed');
 
-// หน้า Export TXT
-Route::get('/export/txt', [DashboardController::class, 'exportTxt'])->name('export.txt');
+// หน้า export txt (ต้องล็อกอิน)
+Route::get('/export/txt', [DashboardController::class, 'exportTxt'])
+    ->middleware('auth')
+    ->name('export.txt');
 
-// หน้า Posts (ซึ่งจะเป็นหน้าแรก)
-Route::get('/dashboard/posts', [DashboardController::class, 'posts'])->name('dashboard.posts');
+// หน้า posts (เปิดได้โดยไม่ต้องล็อกอิน)
+Route::get('/dashboard/posts', [DashboardController::class, 'posts'])
+    ->name('dashboard.posts');
 
-// หน้า Post แยกตาม ID
+// หน้า post แยกตาม ID
 Route::get('/dashboard/posts/{id}', [DashboardController::class, 'postShow'])
     ->name('dashboard.post_show');
 
+// Routes ของ profile (จาก Breeze)
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+// routes ของ Breeze สำหรับ login/register/forgot-password ฯลฯ
+require __DIR__.'/auth.php';

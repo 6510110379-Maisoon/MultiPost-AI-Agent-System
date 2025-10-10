@@ -19,6 +19,8 @@ class DashboardController extends Controller
                 ->orWhere('content', 'like', "%{$search}%");
         }
 
+        $articles = $query->latest()->get(); // ต้องสร้างตัวแปรก่อนส่งไป view
+
         return view('dashboard.index', compact('articles'));
     }
 
@@ -34,6 +36,8 @@ class DashboardController extends Controller
                 ->orWhere('content', 'like', "%{$search}%");
             });
         }
+
+        $processedArticles = $query->latest()->get(); // ต้องสร้างตัวแปรก่อนส่งไป view
 
         return view('dashboard.processed', compact('processedArticles'));
     }

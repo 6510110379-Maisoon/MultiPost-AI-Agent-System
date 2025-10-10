@@ -15,3 +15,6 @@ prisma/dev.db
 # Logs
 logs/
 *.log
+
+# SQLite database files
+/database/*.sqlite

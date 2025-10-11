@@ -36,4 +36,9 @@
         @yield('content')
     </main>
 </body>
+@if(session('success'))
+<div class="bg-green-200 text-green-800 px-4 py-2 rounded mb-4 text-center">
+    {{ session('success') }}
+</div>
+@endif
 </html>

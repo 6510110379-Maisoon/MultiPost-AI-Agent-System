@@ -80,4 +80,33 @@ class DashboardController extends Controller
         $post = ProcessedArticle::with('article')->findOrFail($id);
         return view('dashboard.post_show', compact('post'));
     }
+
+    public function edit($id)
+    {
+        $post = ProcessedArticle::with('article')->findOrFail($id);
+        return view('dashboard.post_edit', compact('post'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $post = ProcessedArticle::findOrFail($id);
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        // อัปเดตทั้ง Article และ ProcessedArticle
+        $post->article->update(['title' => $request->title]);
+        $post->update(['content' => $request->content]);
+
+        return redirect()->route('dashboard.posts')->with('success', 'อัปเดตข้อมูลเรียบร้อย');
+    }
+
+    public function destroy($id)
+    {
+        $post = ProcessedArticle::findOrFail($id);
+        $post->delete();
+
+        return redirect()->route('dashboard.posts')->with('success', 'ลบข่าวเรียบร้อย');
+    }
 }

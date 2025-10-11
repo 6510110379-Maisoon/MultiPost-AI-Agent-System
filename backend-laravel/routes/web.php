@@ -32,6 +32,21 @@ Route::get('/dashboard/posts', [DashboardController::class, 'posts'])
 Route::get('/dashboard/posts/{id}', [DashboardController::class, 'postShow'])
     ->name('dashboard.post_show');
 
+// ฟอร์มแก้ไขข่าว (เฉพาะแอดมิน)
+Route::get('/dashboard/posts/{id}/edit', [DashboardController::class, 'edit'])
+    ->middleware(['auth', 'admin'])
+    ->name('dashboard.post_edit');
+
+// อัปเดตข้อมูลหลังแก้ไข
+Route::put('/dashboard/posts/{id}', [DashboardController::class, 'update'])
+    ->middleware(['auth', 'admin'])
+    ->name('dashboard.post_update');
+
+// ลบข่าว
+Route::delete('/dashboard/posts/{id}', [DashboardController::class, 'destroy'])
+    ->middleware(['auth', 'admin'])
+    ->name('dashboard.post_delete');
+
 // Routes ของ profile (จาก Breeze)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
